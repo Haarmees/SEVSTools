@@ -24,9 +24,13 @@ Now make sure you add all the references as stated in the link above ([this one]
 You should now have two projects with the references to the games .dll files. Next we are going to set up the tool.
 
 ## Setting up the tool
-Download SEScriptBuilder.exe here. In this example we will download it to our solution folder:
+Download SEScriptBuilder.zip [here](https://github.com/Haarmees/SEVSTools/raw/master/SEScriptBuilder.zip). Unpack the zip file 
+on your computer. In this example we will put it in our solution folder.
 
 ![Builder placement](img/builderPlacement.PNG)
+
+Check the added folder and note that it contains a file called SEScriptBuilder.exe
+
 
 ### Creating external tools
 Now we are going to add the .exe file as an external tool, so we can run it on with Visual Studio.
@@ -444,7 +448,7 @@ Now you can start up Space Engineers to test the code. Start a new world in crea
 create a base with some batteries, a textpanel and a programable block.
 Group the batteries and name the group "MyBatteries". Rename the textpanel to "MyTextPanel".
 
- ![Control panel](img/controlPanel.PNG)
+![Control panel](img/controlPanel.PNG)
 
 Now copy the whole code from the Script.cs file to the programmable block. Click "check code"
 and make sure that it has no errors. Now run the programmable block and check the TextPanel.

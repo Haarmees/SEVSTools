@@ -1,4 +1,9 @@
 # SEScriptbuilder
+
+[Download latest SESCriptBuilder.zip](https://github.com/Haarmees/SEVSTools/raw/master/SEScriptBuilder.zip)
+
+[Check out this guide on how to use the tool in VS](https://github.com/Haarmees/SEVSTools/blob/master/SEScriptBuilder/docs/SetupVS.md)
+## What it does
 SEScript builder is a tool to inject code in a main program file. It works with a 
 .csproj file which is also used by Visual Studio. It will check the project for a 
 file with a class that extends MyGridProgram. If found it will analyze this file 
