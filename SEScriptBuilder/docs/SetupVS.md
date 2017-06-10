@@ -448,7 +448,7 @@ Now you can start up Space Engineers to test the code. Start a new world in crea
 create a base with some batteries, a textpanel and a programable block.
 Group the batteries and name the group "MyBatteries". Rename the textpanel to "MyTextPanel".
 
-![Control panel](img/controlPanel.PNG)
+![Control panel](img/ControlPanel.PNG)
 
 Now copy the whole code from the Script.cs file to the programmable block. Click "check code"
 and make sure that it has no errors. Now run the programmable block and check the TextPanel.
