@@ -9,18 +9,23 @@ Also note which references need to be added to a project.
 A solution can contain multiple projects, which can use each other.
  We will first create an empty solution by selecting __File > New > Project__. 
 In the 'New Project' window select the Blank Solution:
+
 ![New solution](img/newSolution.PNG)
+
 Here I've called the solution MySEPrograms.
 Now we are going to create two projects: one 'main' project and one library project.
 Right click on the solution in the 'Solution Explorer' window and choose __Add > New Project..__ Make sure you select 
 "Class Library (.Net Framework)" as shown below
+
 ![New project](img/newProject.PNG)
+
 Name the project MyShipProgram for example. Now create another project and call it MySELibrary.
 Now make sure you add all the references as stated in the link above ([this one](https://forum.keenswh.com/threads/setup-visual-studio-for-se-programming.7385455/)).
 You should now have two projects with the references to the games .dll files. Next we are going to set up the tool.
 
 ## Setting up the tool
 Download SEScriptBuilder.exe here. In this example we will download it to our solution folder:
+
 ![Builder placement](img/builderPlacement.PNG)
 
 ### Creating external tools
@@ -36,6 +41,7 @@ We call the build command of the tool. To set the path or the project file (--p)
 You can see the available variables if you click on the button with the arrow. 
 The ones we use here gives us the project file name ($(ProjectFileName)) and ($(ProjectDir)).
  Next make sure to check the __Use Output Window__ box:
+
 ![Create a external tool](img/createExternalTool.PNG)
 
 Now don't close the window but press the __Apply__ button and add another tool.
@@ -53,7 +59,9 @@ Build --p= "$(ProjectDir)$(ProjectFileName)" --o="C:\Users\<username>\AppData\Ro
 ```
 Replace the output path with your own, make sure its between quotes. Note the --prod to enable production mode.
 Again check the __User Output Window__ box and press apply. You should now have two tools:
+
 ![Create a external tool](img/createSecondExternalTool.PNG)
+
 You can now close the window.
 
 ### Add tools to right click menu
@@ -61,18 +69,23 @@ Now we have the tools we need a way to run them.
 To achieve this we are going to add two buttons on the right click menu of projects.
 Go to __Tools > Customize...__ and select the __Commands__ tab. 
 Now select the Context Menu radio button and from the dropdown select "Project and Solution Context Menus | Project".
+
 ![Customize context menu first](img/contextMenuFirst.PNG)
 
 Now press the __Add Command...__ button and select __Tools__ in the categories menu. 
 Then select __External Command 1__ on the right and click ok.
+
 ![Add a command](img/addCommand.PNG)
 
 Now also add __External Command 2__. 
 (Note that if you already had custom commands these numbers may be different).
 Now still in the customize window, rename the commands by selecting it and clicking
 __Modify Selection__. Rename "External Command 1" to "Build SE script debug" and the second command to "Build SE Script".
+
 ![Customize context menu second](img/contextMenuSecond.PNG)
+
 Close the window and Right Click on a project in the Solution Explorer. You should see two new buttons.
+
 ![New Context Menu](img/newContextMenu.PNG)
 
 Now that we have set up the tool, we can start to add some code!
@@ -162,7 +175,8 @@ We are going to use this class in our main project: MyShipProgram. Before we can
 we need to add the library project as a reference to the main project. This can be done by
 right clicking the References node from the main project in the solution explorer.
 Click __Add reference...__ and expand __Projects__ on the left. Check the box of the library project:
- ![Reference lib project](img/referenceProject.PNG)
+ 
+![Reference lib project](img/referenceProject.PNG)
 
 Click Ok and create a new class file in the main project. Name it MyShipProgram.cs and add the following code:
 ```
@@ -443,6 +457,7 @@ in your file explorer (C:\Users\<username>\AppData\Roaming\SpaceEngineers\Ingame
 see a new folder called MyShipProgram, which contains a Script file. Now go to your Programmable 
 BLock in your control panel and edit the script. Now click "Browse Workshop". The list should show
 a script called MyShipProgram, select it and click ok. Try to run the script and assure there are no errors.
+
 ![Control panel](img/browseWorkshop.PNG)
 
 The created script differs from the one created in debug mode. It only contains the inner body of the main program class.
