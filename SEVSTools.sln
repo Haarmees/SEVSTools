@@ -1,0 +1,64 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SEVSTools", "SEVSTools\SEVSTools.csproj", "{A40FD03E-C361-4DEB-A841-935B368CD639}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SEScriptBuilder", "SEScriptBuilder\SEScriptBuilder.csproj", "{1BE37F9D-CB3A-4496-BDB2-ED0B5E40A5A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SEScriptBuilderTest", "SEScriptBuilderTest\SEScriptBuilderTest.csproj", "{593B780F-990E-4276-8549-83D425265300}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleProgram", "ExampleProgram\ExampleProgram.csproj", "{9C37812E-B848-48FC-8482-4583E84B1EF2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{BE953C70-9647-458E-8A3C-3965D6D0C3B2}"
+	ProjectSection(SolutionItems) = preProject
+		SetupVS.md = SetupVS.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C2F41FD5-0988-4C5B-A861-BE332D739729}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A40FD03E-C361-4DEB-A841-935B368CD639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A40FD03E-C361-4DEB-A841-935B368CD639}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A40FD03E-C361-4DEB-A841-935B368CD639}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A40FD03E-C361-4DEB-A841-935B368CD639}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A40FD03E-C361-4DEB-A841-935B368CD639}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A40FD03E-C361-4DEB-A841-935B368CD639}.Release|x86.ActiveCfg = Release|Any CPU
+		{1BE37F9D-CB3A-4496-BDB2-ED0B5E40A5A2}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{1BE37F9D-CB3A-4496-BDB2-ED0B5E40A5A2}.Debug|x86.ActiveCfg = Debug|x86
+		{1BE37F9D-CB3A-4496-BDB2-ED0B5E40A5A2}.Debug|x86.Build.0 = Debug|x86
+		{1BE37F9D-CB3A-4496-BDB2-ED0B5E40A5A2}.Release|Any CPU.ActiveCfg = Release|x86
+		{1BE37F9D-CB3A-4496-BDB2-ED0B5E40A5A2}.Release|x86.ActiveCfg = Release|x86
+		{1BE37F9D-CB3A-4496-BDB2-ED0B5E40A5A2}.Release|x86.Build.0 = Release|x86
+		{593B780F-990E-4276-8549-83D425265300}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{593B780F-990E-4276-8549-83D425265300}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{593B780F-990E-4276-8549-83D425265300}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{593B780F-990E-4276-8549-83D425265300}.Debug|x86.Build.0 = Debug|Any CPU
+		{593B780F-990E-4276-8549-83D425265300}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{593B780F-990E-4276-8549-83D425265300}.Release|Any CPU.Build.0 = Release|Any CPU
+		{593B780F-990E-4276-8549-83D425265300}.Release|x86.ActiveCfg = Release|Any CPU
+		{593B780F-990E-4276-8549-83D425265300}.Release|x86.Build.0 = Release|Any CPU
+		{9C37812E-B848-48FC-8482-4583E84B1EF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C37812E-B848-48FC-8482-4583E84B1EF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C37812E-B848-48FC-8482-4583E84B1EF2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9C37812E-B848-48FC-8482-4583E84B1EF2}.Debug|x86.Build.0 = Debug|Any CPU
+		{9C37812E-B848-48FC-8482-4583E84B1EF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C37812E-B848-48FC-8482-4583E84B1EF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C37812E-B848-48FC-8482-4583E84B1EF2}.Release|x86.ActiveCfg = Release|Any CPU
+		{9C37812E-B848-48FC-8482-4583E84B1EF2}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
