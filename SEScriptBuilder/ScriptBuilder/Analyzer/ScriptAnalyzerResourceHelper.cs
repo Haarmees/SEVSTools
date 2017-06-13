@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SEScriptBuilder.ScriptBuilder.TaggedSyntax;
 
 namespace SEScriptBuilder.ScriptBuilder.Analyzer
 {
@@ -19,14 +20,14 @@ namespace SEScriptBuilder.ScriptBuilder.Analyzer
 			this.symbolHelper = sHelper;
 		}
 
-		public List<SyntaxNode> GetSyntaxNodes(SyntaxNode node)
+		public List<SyntaxNode> GetSyntaxNodes(SyntaxNode node, TaggedSyntaxLibrary lib = null)
 		{
 			List<SyntaxNode> nodes = new List<SyntaxNode>();
 			Type type = node.GetType();
 
 			if (type == typeof(ClassDeclarationSyntax))
 			{
-				nodes = this.GetSyntaxNodesFromClass(node as ClassDeclarationSyntax);
+				nodes = this.GetSyntaxNodesFromClass(node as ClassDeclarationSyntax, lib);
 			}
 			else if (type == typeof(ConstructorInitializerSyntax))
 			{
@@ -34,7 +35,7 @@ namespace SEScriptBuilder.ScriptBuilder.Analyzer
 			}
 			else if (type == typeof(MethodDeclarationSyntax))
 			{
-				nodes = this.GetSyntaxNodesFromMethod(node as MethodDeclarationSyntax);
+				nodes = this.GetSyntaxNodesFromMethod(node as MethodDeclarationSyntax, lib);
 			}
 			else if (type == typeof(InvocationExpressionSyntax))
 			{
@@ -53,7 +54,7 @@ namespace SEScriptBuilder.ScriptBuilder.Analyzer
 			return nodes;
 		}
 
-		public List<SyntaxNode> GetSyntaxNodesFromClass(ClassDeclarationSyntax node)
+		public List<SyntaxNode> GetSyntaxNodesFromClass(ClassDeclarationSyntax node, TaggedSyntaxLibrary lib)
 		{
 			List<SyntaxNode> nodes = new List<SyntaxNode>();
 			INamedTypeSymbol classSymbol = this.symbolHelper.GetSymbol(node) as INamedTypeSymbol;
@@ -78,7 +79,36 @@ namespace SEScriptBuilder.ScriptBuilder.Analyzer
 						}
 					}
 				}
+
+				// check for override methods
+				List<IMethodSymbol> oMethods = this.getOverrideMethodSymbolsFromClass(node);
+				if (oMethods != null && oMethods.Count() > 0)
+				{
+					foreach (IMethodSymbol oMethod in oMethods)
+					{
+						IMethodSymbol overridden = oMethod.OverriddenMethod;
+						if (overridden != null)
+						{
+							List<SyntaxNode> oNodes = ScriptAnalyzerResourceHelper.GetSyntaxNodesFromSymbol(overridden);
+							if (oNodes != null && oNodes.Count() > 0)
+							{
+								MethodDeclarationSyntax oNode = oNodes.First() as MethodDeclarationSyntax;
+								if (oNode != null)
+								{
+									TaggedSyntaxTree tTree = lib.GetTreeFromNode(oNode);
+									if (tTree != null && tTree.IsTagged(oNode))
+									{
+										symbols.Add(oMethod);
+									}
+								}
+							}
+						}
+					}
+				}
+
 				nodes = ScriptAnalyzerResourceHelper.GetSyntaxNodesFromSymbols(symbols);
+
+				
 			}
 			
 			return nodes;
@@ -95,14 +125,22 @@ namespace SEScriptBuilder.ScriptBuilder.Analyzer
 			return nodes;
 		}
 
-		public List<SyntaxNode> GetSyntaxNodesFromMethod(MethodDeclarationSyntax node)
+		public List<SyntaxNode> GetSyntaxNodesFromMethod(MethodDeclarationSyntax node, TaggedSyntaxLibrary lib)
 		{
 			List<SyntaxNode> nodes = new List<SyntaxNode>();
 			IMethodSymbol symbol = this.symbolHelper.GetSymbol(node) as IMethodSymbol;
 			if (symbol != null)
 			{
 				List<ISymbol> symbols = new List<ISymbol>();
-
+				if (symbol.IsOverride)
+				{
+					symbols.Add(symbol.OverriddenMethod);
+				}
+				if (symbol.IsVirtual)
+				{
+					List<ISymbol> mSymbols = this.GetSymbolsFromVirtualFunction(symbol, lib).Select(s => s as ISymbol).ToList() ;
+					symbols.AddRange(mSymbols);
+				}
 				// return type
 				ITypeSymbol returnType = symbol.ReturnType;
 				if (returnType != null)
@@ -126,6 +164,62 @@ namespace SEScriptBuilder.ScriptBuilder.Analyzer
 			}
 		
 			return nodes;
+		}
+
+		private List<IMethodSymbol> GetSymbolsFromVirtualFunction(IMethodSymbol symbol, TaggedSyntaxLibrary lib)
+		{
+			List<IMethodSymbol> symbols = new List<IMethodSymbol>();
+
+			if (lib.TaggedSyntaxTrees != null && lib.TaggedSyntaxTrees.Count() > 0)
+			{
+				foreach (TaggedSyntaxTree tTree in lib.TaggedSyntaxTrees)
+				{
+					List<ClassDeclarationSyntax> classes = tTree.TaggedNodes.OfType<ClassDeclarationSyntax>().ToList();
+					if (classes != null && classes.Count() > 0)
+					{
+						foreach (ClassDeclarationSyntax classSyntax in classes) {
+							List<IMethodSymbol> mSymbols = this.getOverrideMethodSymbolsFromClass(classSyntax);
+							if (mSymbols != null && mSymbols.Count() > 0)
+							{
+								foreach (IMethodSymbol mSymbol in mSymbols)
+								{
+									if (mSymbol.OverriddenMethod == symbol)
+									{
+										symbols.Add(mSymbol);
+									}
+								}
+							}
+						}
+						
+					}
+				}
+			}
+
+			return symbols;
+		}
+
+		private List<IMethodSymbol> getOverrideMethodSymbolsFromClass(ClassDeclarationSyntax node)
+		{
+			List<IMethodSymbol> symbols = new List<IMethodSymbol>();
+			if (node != null)
+			{
+				List<MethodDeclarationSyntax> methods = node.DescendantNodes().OfType<MethodDeclarationSyntax>().ToList();
+				if (methods != null && methods.Count() > 0)
+				{
+					foreach (MethodDeclarationSyntax method in methods)
+					{
+						IMethodSymbol symbol = this.symbolHelper.GetSymbol(method) as IMethodSymbol;
+						if (symbol != null)
+						{
+							if (symbol.IsOverride)
+							{
+								symbols.Add(symbol);
+							}
+						}
+					}
+				}
+			}
+			return symbols;
 		}
 
 		public List<SyntaxNode> GetSyntaxNodesFromInvocation(InvocationExpressionSyntax node)

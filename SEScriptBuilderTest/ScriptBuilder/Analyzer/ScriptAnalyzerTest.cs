@@ -83,6 +83,7 @@ namespace SEScriptBuilderTest.ScriptBuilder.Analyzer
 			}
 		}
 
+		
 		[TestMethod, TestCategory("ScriptBuilder.Analyzer.ScriptAnalyzerTest")]
 		public void TestAnalyzeClass()
 		{
@@ -111,6 +112,111 @@ namespace SEScriptBuilderTest.ScriptBuilder.Analyzer
 			{
 				CollectionAssert.DoesNotContain(tree.TaggedNodes, node, "SubNode is not added to tree");
 			}
+		}
+
+		[TestMethod, TestCategory("ScriptBuilder.Analyzer.ScriptAnalyzerTest")]
+		public void TestAnalyzeOverrideMethod()
+		{
+			string code1 = @"class TestClass { public void MainMethod(){ SubClass test = new SubClass(); test.TestMethod();}}";
+			string code2 = @"class SuperClass { public virtual void TestMethod(){}}";
+			string code3 = @"class SubClass:SuperClass { public override void TestMethod(){}}";
+			SyntaxTree tree1 = CSharpSyntaxTree.ParseText(code1);
+			SyntaxTree tree2 = CSharpSyntaxTree.ParseText(code2);
+			SyntaxTree tree3 = CSharpSyntaxTree.ParseText(code3);
+
+			MethodDeclarationSyntax mainNode = tree1.GetRootAsync().Result.DescendantNodes().OfType<MethodDeclarationSyntax>().First();
+			MethodDeclarationSyntax superNode = tree2.GetRootAsync().Result.DescendantNodes().OfType<MethodDeclarationSyntax>().First();
+			MethodDeclarationSyntax subNode = tree3.GetRootAsync().Result.DescendantNodes().OfType<MethodDeclarationSyntax>().First();
+			List<SyntaxTree> trees1 = new List<SyntaxTree> { tree1 , tree2, tree3};
+			Compilation comp1 = CSharpCompilation.Create("TestCompilation1", trees1);
+
+			ScriptAnalyzer analyzer = this.createAnalyzer(comp1);
+
+			TaggedSyntaxLibrary lib = analyzer.AnalyzeNode(mainNode);
+
+			Assert.IsNotNull(lib, "Library defined");
+			Assert.AreEqual(3, lib.TaggedSyntaxTrees.Count(), "Has three trees");
+
+			TaggedSyntaxTree rTree1 = lib.TaggedSyntaxTrees.First();
+			TaggedSyntaxTree rTree2 = lib.TaggedSyntaxTrees.ElementAt(1);
+			TaggedSyntaxTree rTree3 = lib.TaggedSyntaxTrees.ElementAt(2);
+
+			CollectionAssert.Contains(rTree1.TaggedNodes, mainNode, "Main tree contains main method");
+			CollectionAssert.Contains(rTree3.TaggedNodes, superNode, "Super tree contains super method");
+			CollectionAssert.Contains(rTree2.TaggedNodes, subNode, "Sub tree contains sub method");
+		}
+
+		[TestMethod, TestCategory("ScriptBuilder.Analyzer.ScriptAnalyzerTest")]
+		public void TestAnalyzeOverrideMethodFromVirtual()
+		{
+			string code1 = @"class TestClass { public void MainMethod(){ SubClass test = new SubClass(); test.TestMethod();}}";
+			string code2 = @"class SuperClass { public void TestMethod(){this.TestMethod2();} public virtual void TestMethod2(){}}";
+			string code3 = @"class SubClass:SuperClass { public override void TestMethod2(){}}";
+			SyntaxTree tree1 = CSharpSyntaxTree.ParseText(code1);
+			SyntaxTree tree2 = CSharpSyntaxTree.ParseText(code2);
+			SyntaxTree tree3 = CSharpSyntaxTree.ParseText(code3);
+
+			MethodDeclarationSyntax mainNode = tree1.GetRootAsync().Result.DescendantNodes().OfType<MethodDeclarationSyntax>().First();
+			MethodDeclarationSyntax superNode1 = tree2.GetRootAsync().Result.DescendantNodes().OfType<MethodDeclarationSyntax>().First();
+			MethodDeclarationSyntax superNode2 = tree2.GetRootAsync().Result.DescendantNodes().OfType<MethodDeclarationSyntax>().Last();
+			MethodDeclarationSyntax subNode = tree3.GetRootAsync().Result.DescendantNodes().OfType<MethodDeclarationSyntax>().First();
+			List<SyntaxTree> trees1 = new List<SyntaxTree> { tree1, tree2, tree3 };
+			Compilation comp1 = CSharpCompilation.Create("TestCompilation1", trees1);
+
+			ScriptAnalyzer analyzer = this.createAnalyzer(comp1);
+
+			TaggedSyntaxLibrary lib = analyzer.AnalyzeNode(mainNode);
+
+			Assert.IsNotNull(lib, "Library defined");
+			Assert.AreEqual(3, lib.TaggedSyntaxTrees.Count(), "Has three trees");
+
+			TaggedSyntaxTree rTree1 = lib.TaggedSyntaxTrees.First();
+			TaggedSyntaxTree rTree2 = lib.TaggedSyntaxTrees.ElementAt(1);
+			TaggedSyntaxTree rTree3 = lib.TaggedSyntaxTrees.ElementAt(2);
+
+			CollectionAssert.Contains(rTree1.TaggedNodes, mainNode, "Main tree contains main method");
+			CollectionAssert.Contains(rTree3.TaggedNodes, superNode1, "Super tree contains first method");
+			CollectionAssert.Contains(rTree3.TaggedNodes, superNode2, "Super tree contains first method");
+			CollectionAssert.Contains(rTree2.TaggedNodes, subNode, "Sub tree contains sub method");
+		}
+
+		[TestMethod, TestCategory("ScriptBuilder.Analyzer.ScriptAnalyzerTest")]
+		public void TestAnalyzeOverrideMethodFromClass()
+		{
+			string code1 = @"class TestClass { public void MainMethod(){ SubClass test = new SubClass(); test.TestMethod(); NextSubClass test2 = new NextSubClass(); test.TestMethod();}}";
+			string code2 = @"class SuperClass { public void TestMethod(){this.TestMethod2();} public virtual void TestMethod2(){}}";
+			string code3 = @"class SubClass:SuperClass { public override void TestMethod2(){}}";
+			string code4 = @"class NextSubClass:SuperClass { public override void TestMethod2(){}}";
+			SyntaxTree tree1 = CSharpSyntaxTree.ParseText(code1);
+			SyntaxTree tree2 = CSharpSyntaxTree.ParseText(code2);
+			SyntaxTree tree3 = CSharpSyntaxTree.ParseText(code3);
+			SyntaxTree tree4 = CSharpSyntaxTree.ParseText(code4);
+
+			MethodDeclarationSyntax mainNode = tree1.GetRootAsync().Result.DescendantNodes().OfType<MethodDeclarationSyntax>().First();
+			MethodDeclarationSyntax superNode1 = tree2.GetRootAsync().Result.DescendantNodes().OfType<MethodDeclarationSyntax>().First();
+			MethodDeclarationSyntax superNode2 = tree2.GetRootAsync().Result.DescendantNodes().OfType<MethodDeclarationSyntax>().Last();
+			MethodDeclarationSyntax subNode = tree3.GetRootAsync().Result.DescendantNodes().OfType<MethodDeclarationSyntax>().First();
+			MethodDeclarationSyntax nextSubNode = tree4.GetRootAsync().Result.DescendantNodes().OfType<MethodDeclarationSyntax>().First();
+			List<SyntaxTree> trees1 = new List<SyntaxTree> { tree1, tree2, tree3, tree4 };
+			Compilation comp1 = CSharpCompilation.Create("TestCompilation1", trees1);
+
+			ScriptAnalyzer analyzer = this.createAnalyzer(comp1);
+
+			TaggedSyntaxLibrary lib = analyzer.AnalyzeNode(mainNode);
+
+			Assert.IsNotNull(lib, "Library defined");
+			Assert.AreEqual(4, lib.TaggedSyntaxTrees.Count(), "Has three trees");
+
+			TaggedSyntaxTree rTree1 = lib.TaggedSyntaxTrees.First();
+			TaggedSyntaxTree rTree2 = lib.TaggedSyntaxTrees.ElementAt(1);
+			TaggedSyntaxTree rTree3 = lib.TaggedSyntaxTrees.ElementAt(2);
+			TaggedSyntaxTree rTree4 = lib.TaggedSyntaxTrees.ElementAt(3);
+
+			CollectionAssert.Contains(rTree1.TaggedNodes, mainNode, "Main tree contains main method");
+			CollectionAssert.Contains(rTree3.TaggedNodes, superNode1, "Super tree contains first method");
+			CollectionAssert.Contains(rTree3.TaggedNodes, superNode2, "Super tree contains first method");
+			CollectionAssert.Contains(rTree2.TaggedNodes, subNode, "Sub tree contains sub method");
+			CollectionAssert.Contains(rTree4.TaggedNodes, nextSubNode, "Next Sub tree contains sub method");
 		}
 
 		[TestMethod, TestCategory("ScriptBuilder.Analyzer.ScriptAnalyzerTest")]

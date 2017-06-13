@@ -45,15 +45,7 @@ namespace SEScriptBuilder.ScriptBuilder.Analyzer
 					this.DefaultAnalyze(node, lib);
 				}
 
-				// analyze resources if any
-				List<SyntaxNode> resources = this.resourceHelper.GetSyntaxNodes(node);
-				if (resources.Count() > 0)
-				{
-					foreach (SyntaxNode resource in resources)
-					{
-						this.AnalyzeNode(resource, lib);
-					}
-				}
+				this.ResourceAnalyze(node, lib);
 			}
 			return lib;
 		}
@@ -65,6 +57,7 @@ namespace SEScriptBuilder.ScriptBuilder.Analyzer
 
 		public TaggedSyntaxLibrary AnalyzeClass(ClassDeclarationSyntax node, TaggedSyntaxLibrary lib)
 		{
+			
 			lib.TagNode(node);
 			return lib;
 		}
@@ -95,6 +88,18 @@ namespace SEScriptBuilder.ScriptBuilder.Analyzer
 			return lib;
 		}
 
+		public TaggedSyntaxLibrary ResourceAnalyze(SyntaxNode node, TaggedSyntaxLibrary lib) {
+			// analyze resources if any
+			List<SyntaxNode> resources = this.resourceHelper.GetSyntaxNodes(node, lib);
+			if (resources.Count() > 0)
+			{
+				foreach (SyntaxNode resource in resources)
+				{
+					this.AnalyzeNode(resource, lib);
+				}
+			}
 
+			return lib;
+		}
 	}
 }
