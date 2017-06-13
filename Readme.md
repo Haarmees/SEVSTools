@@ -110,3 +110,10 @@ you can run the build command on the script builder. For example:
 SEScriptBuilder Build --project="C:\..\MyProject\MyProject.csproj" --out="C:\..\MyProject" --prod
 ```
 Note that you need to call the 'Build' command and the quotation marks around the paths (which are shortened for readability). 
+
+## Known limitations
+  * Class names should be unique: classes are directly imported and conflicts occur if classes have the same name.
+  
+## Changelog
+### 0.1.1
+  * Fixed virtual and override methods not imported correctly
