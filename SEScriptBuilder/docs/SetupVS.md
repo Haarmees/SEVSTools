@@ -59,7 +59,7 @@ C:\Users\<username>\AppData\Roaming\SpaceEngineers\IngameScripts\local
 ```
 Now we are going to use this folder as output and add a "Production" flag to the parameters:
 ```
-Build --p= "$(ProjectDir)$(ProjectFileName)" --o="C:\Users\<username>\AppData\Roaming\SpaceEngineers\IngameScripts\local" --prod
+Build -p="$(ProjectDir)$(ProjectFileName)" -o="C:\Users\<username>\AppData\Roaming\SpaceEngineers\IngameScripts\local" --prod
 ```
 Replace the output path with your own, make sure its between quotes. Note the --prod to enable production mode.
 Again check the __User Output Window__ box and press apply. You should now have two tools:
